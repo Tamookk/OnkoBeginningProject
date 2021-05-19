@@ -1,20 +1,13 @@
 from os.path import expanduser
 from PyQt5.QtCore import *
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtWidgets import *
 from DirectoryManager import DirectoryManager
 
 
 # Global variables (BAD, REMOVE)
-home_dir = ""
-
-
-def get_home_directory(label: QLabel):
-    # Set home directory
-    home_dir = expanduser("~")
-
-    # Update label to output home directory
-    label.setText(home_dir)
+user_home = expanduser("~")
+onko_folder = ""
 
 
 def create_directory(directory_name, msg):
@@ -27,12 +20,20 @@ def create_directory(directory_name, msg):
     msg.exec_()
 
 
-
 def remove_directory(directory_name, msg):
     """ Remove the path we just created """
     DirectoryManager.remove_directory(directory_name)
 
     msg.exec_()
+
+
+def show_file_browser(line_edit: QLineEdit, folder_model: QFileSystemModel):
+    global onko_folder
+    onko_folder = QFileDialog.getExistingDirectory(caption="Choose Directory", directory=user_home)
+    if onko_folder == "":
+        onko_folder = expanduser("~")
+    line_edit.setText(onko_folder)
+    folder_model.index(onko_folder)
 
 
 if __name__ == '__main__':
@@ -43,56 +44,75 @@ if __name__ == '__main__':
     bold_font = QFont()
     bold_font.setBold(True)
 
-    # Create window and vertical layout
+    # Create window and layouts
     window = QWidget()
-    layout = QVBoxLayout()
-    window.setLayout(layout)
+    window.setWindowTitle("Onko Beginning Project")
+    outer_layout = QVBoxLayout()
+    welcome_layout = QGridLayout()
+    directory_layout = QGridLayout()
+    folder_tree_layout = QGridLayout()
+    window.setLayout(outer_layout)
 
-    # Create a QPushButton and QLabels to get and show user home
-    button = QPushButton("Discover Home Directory")
-    home_dir_title_label = QLabel("Home Directory")
-    home_dir_label = QLabel("")
+    # Welcome widgets
+    logo = QPixmap("../assets/images/logo.png")
+    logo_label = QLabel()
+    logo_label.setPixmap(logo)
+    welcome_text = """
+        Welcome to OnkoDICOM.\t\t\t\t\t\n
+        Config file not found.\n
+        Welcome message.\n
+        Onko introduction.\n
+        Onko missions.
+        """
+    welcome_text_label = QLabel(welcome_text)
 
-    # Create QPushButton's to create directory and to remove directory
-    button_create_dir = QPushButton("Create Directory")
-    button_remove_dir = QPushButton("Remove Directory")
+    # Directory widgets
+    directory_label = QLabel("Add a directory as your default directory")
+    directory_input = QLineEdit()
+    directory_input.setText(user_home)
+    browse_button = QPushButton("Browse")
 
-    # Create QMessageBox's to alert user of direction creation and removal
-    msgBox_dir_creation = QMessageBox()
-    msgBox_dir_removal = QMessageBox()
+    # Folder tree widgets
+    folder_model = QFileSystemModel()
+    folder_model.setRootPath(user_home)
+    folder_tree = QTreeView()
+    folder_tree.setModel(folder_model)
+    folder_tree.setCurrentIndex(folder_model.index(user_home))
+    folder_tree.setAnimated(False)
+    folder_tree.setIndentation(20)
+    folder_tree.setSortingEnabled(True)
+    folder_tree.setColumnWidth(0, folder_tree.width() * 0.3)
+    skip_button = QPushButton("Skip")
+    confirm_button = QPushButton("Confirm")
 
-    # Set QMessageBox's properties
-    msgBox_dir_creation.setWindowTitle("Attention")
-    msgBox_dir_creation.setIcon(QMessageBox.Information)
-    msgBox_dir_creation.setText("Please check your users directory for the created hidden directory. \nHint ('.OnkoDICOM')")
-    msgBox_dir_removal.setWindowTitle("Attention")
-    msgBox_dir_removal.setIcon(QMessageBox.Information)
-    msgBox_dir_removal.setText("Please check your users directory for removal of hidden directory.")
+    # Message box for creating directory
+    msgbox_create_dir = QMessageBox()
+    msgbox_create_dir.setWindowTitle("Application Directory Created")
+    msgbox_create_dir.setIcon(QMessageBox.Information)
+    msgbox_create_dir.setText("Please check your users directory for the created hidden directory. \nHint ('.OnkoDICOM')")
 
+    # Add widgets to welcome layout
+    welcome_layout.addWidget(logo_label, 0, 0, 1, 1)
+    welcome_layout.addWidget(welcome_text_label, 0, 1, 1, 3)
 
-    # Set widget properties
-    home_dir_title_label.setFont(bold_font)
-    home_dir_title_label.setAlignment(Qt.AlignCenter)
-    home_dir_label.setAlignment(Qt.AlignCenter)
+    # Add widgets to the directory layout
+    directory_layout.addWidget(directory_label, 0, 0, 1, 4)
+    directory_layout.addWidget(directory_input, 1, 0, 1, 3)
+    directory_layout.addWidget(browse_button, 1, 3, 1, 1)
+
+    # Add widgets to the folder tree layout
+    folder_tree_layout.addWidget(folder_tree, 0, 0, 4, 4)
+    folder_tree_layout.addWidget(skip_button, 4, 2, 1, 1)
+    folder_tree_layout.addWidget(confirm_button, 4, 3, 1, 1)
 
     # Add widgets to the layout
-    layout.addWidget(button)
-    layout.addWidget(home_dir_title_label)
-    layout.addWidget(home_dir_label)
+    outer_layout.addLayout(welcome_layout)
+    outer_layout.addLayout(directory_layout)
+    outer_layout.addLayout(folder_tree_layout)
 
-    layout.addWidget(button_create_dir)
-    layout.addWidget(button_remove_dir)
-
-    #Directory name
-    dir_name = ".OnkoDICOM"
-
-    # Display QMessageBox's respective to button press
-    button_create_dir.clicked.connect(lambda: create_directory(dir_name, msgBox_dir_creation))
-    button_remove_dir.clicked.connect(lambda: remove_directory(DirectoryManager.determine_correct_path(dir_name), msgBox_dir_removal))
-
-
-    # When clicking the button, call function get_home_directory to update home_dir_label's text
-    button.clicked.connect(lambda: get_home_directory(home_dir_label))
+    # Attach functions to buttons
+    browse_button.clicked.connect(lambda: show_file_browser(directory_input, folder_model))
+    confirm_button.clicked.connect(lambda: create_directory(onko_folder, msgbox_create_dir))
 
     # Show the window and run the application
     window.show()

@@ -13,20 +13,17 @@ class DirectoryManager:
             Determine the path for the default directory
             This directory is to be hidden directory in the users home directory """
 
-        """ Get home directory """
-        user_dir = os.path.expanduser("~")
-
         desired_path = ""
 
         if platform.system() == "Windows":
-            desired_path = "\\%s\\" % directory_name
+            desired_path = "\\.OnkoDICOM\\"
         elif platform.system() == "Linux" or platform.system() == "Darwin":
-            desired_path = "/%s/" % directory_name
+            desired_path = "/.OnkoDICOM/"
         else:
             print("System not recognised. \nOnkoDICOM only supported on Linux, Windows & OS X systems.")
             exit()
 
-        return user_dir + desired_path
+        return directory_name + desired_path
 
     @staticmethod
     def windows_make_directory_hidden(directory):
