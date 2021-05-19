@@ -7,7 +7,7 @@ from DirectoryManager import DirectoryManager
 
 # Global variables (BAD, REMOVE)
 user_home = expanduser("~")
-onko_folder = ""
+onko_folder = user_home
 
 
 def create_directory(directory_name, msg):

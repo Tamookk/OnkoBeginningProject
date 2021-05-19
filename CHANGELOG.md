@@ -1,5 +1,13 @@
 # Changelog
 
+## 2021-05-19
+### Added
+* GUI based on first-time startup wireframe.
+
+### Fixed
+* Bug where creating `.OnkoDICOM` folder without first picking a loction via the file dialog would create the folder in the root directory.
+
+
 ## 2021-05-14
 ### Added
 * Basic PyQt window.
