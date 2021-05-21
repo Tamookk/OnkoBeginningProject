@@ -1,13 +1,13 @@
 from Controller.ConfigurationRecordController import ConfigurationRecordController
 from DirectoryManager import DirectoryManager
-from PyQt5.QtCore import *
+from PyQt5 import QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from os.path import exists, expanduser
 
 
 class FirstTimeWindow(QWidget):
-    create_database = pyqtSignal(str)
+    go_next_window = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
@@ -147,6 +147,7 @@ class FirstTimeWindow(QWidget):
 
         # Tell the user the directory has been created
         self.msgbox_create_dir.exec_()
+        self.go_open_patient_window()
         self.window.close()
 
     def remove_directory(self):
@@ -157,6 +158,12 @@ class FirstTimeWindow(QWidget):
 
         # Tell the user the directory has been deleted
         self.msgbox_create_dir.exec_()
+
+    def go_open_patient_window(self):
+        """
+        Go to the next window
+        """
+        self.go_next_window.emit()
 
     def show(self):
         self.window.show()
