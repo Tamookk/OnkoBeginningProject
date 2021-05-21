@@ -2,15 +2,15 @@ from os.path import expanduser
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtWidgets import *
-from DirectoryManager import DirectoryManager
 
 from Controller.ConfigurationRecordController import ConfigurationRecordController
 from GUI.FirstTimeWindow import FirstTimeWindow
 
-
 if __name__ == '__main__':
     # Create QApplication and QFrame instance
     app = QApplication([])
+
+
 
     # Try open SQLite configuration
     configuration_database = ConfigurationRecordController()
@@ -21,6 +21,7 @@ if __name__ == '__main__':
     else:
         # TODO: set program settings based on database contents
         print("Opened configuration file.")
+        conn = configuration_database.c
         exit()
 
     app.exec()

@@ -1,5 +1,6 @@
 import os.path
 import sqlite3
+from PyQt5.QtCore import *
 
 class ConfigurationRecordController():
     def __init__(self):
@@ -29,3 +30,33 @@ class ConfigurationRecordController():
         except IOError:
             print("Failed to open configuration record.")
             return False
+
+    def create_database(self, directory):
+        try:
+            self.conn = sqlite3.connect(self.database)
+            self.cursor = self.conn.cursor()
+        except IOError:
+            print("Failed to create configuration record.")
+            return
+
+        # Insert table into database
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS config
+                               (
+                                attrib TEXT PRIMARY KEY,
+                                value TEXT NOT NULL
+                               );""")
+
+        # Insert default directory into database
+        self.cursor.execute("""INSERT INTO config (attrib, value)
+                               VALUES(\'default_directory\', \'%s\')"""
+                            % directory)
+
+        # Commit changes
+        self.conn.commit()
+
+    def read_config(self):
+        """
+        Read program configuration from configurtion file and return these settings.
+        :return:
+        settings: Python dictionary of program settings read from config file
+        """

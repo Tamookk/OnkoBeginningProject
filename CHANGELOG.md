@@ -2,7 +2,8 @@
 
 ## 2021-05-21
 ### Added
-* Ability to open sqlite configuration file if it exists.
+* Ability to open SQLite configuration file if it exists.
+* Program creates SQLite configuration file and writes default directory to it.
 
 ### Changed
 * Moved First Time Window GUI into own file.

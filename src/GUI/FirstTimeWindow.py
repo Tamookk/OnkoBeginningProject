@@ -1,9 +1,14 @@
+from Controller.ConfigurationRecordController import ConfigurationRecordController
 from DirectoryManager import DirectoryManager
+from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from os.path import exists, expanduser
 
+
 class FirstTimeWindow(QWidget):
+    create_database = pyqtSignal(str)
+
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
 
@@ -136,8 +141,13 @@ class FirstTimeWindow(QWidget):
         # Create the application directory
         DirectoryManager.create_directory(hidden_dir)
 
+        # Create database and insert hidden directory
+        config_controller = ConfigurationRecordController()
+        config_controller.create_database(hidden_dir)
+
         # Tell the user the directory has been created
         self.msgbox_create_dir.exec_()
+        self.window.close()
 
     def remove_directory(self):
         """
