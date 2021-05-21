@@ -9,9 +9,11 @@ class DirectoryManager:
 
     @staticmethod
     def determine_correct_path(directory_name):
-        """ Linux, Windows and OSX
-            Determine the path for the default directory
-            This directory is to be hidden directory in the users home directory """
+        """
+        Linux, Windows and OSX
+        Determine the path for the default directory
+        This directory is to be hidden directory in the users home directory
+        """
 
         desired_path = ""
 

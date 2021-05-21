@@ -1,5 +1,16 @@
 # Changelog
 
+## 2021-05-21
+### Changed
+* Moved First Time Window GUI into own file.
+
+### Fixed
+* Some bugs concerning filepaths:
+  * If filepath doesn't exist, it is set to the user's home directory.
+  * If filepath input field is empty when folder is created, it is created in user's home directory.
+  * Tree folder view now reflects input field file path, is set to user's home if filepath is invalid.
+
+
 ## 2021-05-19
 ### Added
 * GUI based on first-time startup wireframe.
