@@ -1,6 +1,9 @@
 # Changelog
 
 ## 2021-05-21
+### Added
+* Ability to open sqlite configuration file if it exists.
+
 ### Changed
 * Moved First Time Window GUI into own file.
 

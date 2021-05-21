@@ -1,0 +1,3 @@
+Model: updates GUI (e.g. fridge full of food)
+View: GUI (e.g. cooked meal)
+Controller: ties together Model and View (e.g. recipe)
