@@ -10,8 +10,6 @@ if __name__ == '__main__':
     # Create QApplication and QFrame instance
     app = QApplication([])
 
-
-
     # Try open SQLite configuration
     configuration_database = ConfigurationRecordController()
     if not configuration_database.connect_to_database():
