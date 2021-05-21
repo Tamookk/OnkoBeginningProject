@@ -4,6 +4,7 @@
 ### Added
 * Ability to open SQLite configuration file if it exists.
 * Program creates SQLite configuration file and writes default directory to it.
+* Program can read settings from configuration file.
 
 ### Changed
 * Moved First Time Window GUI into own file.

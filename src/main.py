@@ -21,7 +21,8 @@ if __name__ == '__main__':
     else:
         # TODO: set program settings based on database contents
         print("Opened configuration file.")
-        conn = configuration_database.c
+        settings = configuration_database.read_config()
+        print("Home directory: %s" % settings['default_directory'])
         exit()
 
     app.exec()

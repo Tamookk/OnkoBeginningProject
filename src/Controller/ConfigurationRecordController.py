@@ -17,7 +17,7 @@ class ConfigurationRecordController():
         """
         Connect to a database.
         :return:
-        status (bool)   : database connection status
+        status (bool): database connection status
         """
         if not os.path.exists(self.database):
             print("Configuration record not found.")
@@ -58,5 +58,15 @@ class ConfigurationRecordController():
         """
         Read program configuration from configurtion file and return these settings.
         :return:
-        settings: Python dictionary of program settings read from config file
+        settings (dict): Python dictionary of program settings read from config file
         """
+        # Read data from settings database
+        data = self.cursor.execute("""SELECT * FROM config""")
+
+        # Create settings dictionary
+        settings = {}
+        for row in data:
+            settings[row[0]] = row[1]
+
+        # Return settings
+        return settings
