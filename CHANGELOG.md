@@ -1,5 +1,13 @@
 # Changelog
 
+## 2021-05-24
+### Added
+* Select Patient Window.
+
+### Changed
+* Renamed Model folder to View.
+
+
 ## 2021-05-21
 ### Added
 * Ability to open SQLite configuration file if it exists.

@@ -56,7 +56,7 @@ class ConfigurationRecordController():
 
     def read_config(self):
         """
-        Read program configuration from configurtion file and return these settings.
+        Read program configuration from configuration file and return these settings.
         :return:
         settings (dict): Python dictionary of program settings read from config file
         """
@@ -70,3 +70,13 @@ class ConfigurationRecordController():
 
         # Return settings
         return settings
+
+    def get_default_directory(self):
+        """
+        Get the program default directory from the configuration file.
+        :return:
+        file_path (str): file path of the program default directory
+        """
+        data = self.cursor.execute("""SELECT value from config WHERE attrib = \'default_directory\'""")
+        for row in data:
+            return row[0]
