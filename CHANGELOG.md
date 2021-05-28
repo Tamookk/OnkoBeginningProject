@@ -1,4 +1,8 @@
 # Changelog
+## 2021-05-28
+### Added
+* Program can now find all DICOM files inside the program's default directory.
+
 
 ## 2021-05-24
 ### Added

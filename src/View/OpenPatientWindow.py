@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from Controller import ConfigurationRecordController
+from Controller import ConfigurationRecordController, FindDICOMFileController
 from os.path import expanduser
 
 import threading
@@ -69,7 +69,8 @@ class OpenPatientWindow(QWidget):
         # Connect buttons to functions
         self.browse_button.clicked.connect(self.show_file_browser)
         self.back_button.clicked.connect(self.go_display_welcome_window)
-        self.confirm_button.clicked.connect(self.go_display_image_window)
+        #self.confirm_button.clicked.connect(self.go_display_image_window)
+        self.confirm_button.clicked.connect(self.search_for_patient)
 
     def line_edit_changed(self):
         """
@@ -100,6 +101,10 @@ class OpenPatientWindow(QWidget):
         """
         # Get the currently selected directory
         file_path = self.directory_input.text()
+
+        dicom_file_controller = FindDICOMFileController.FindDICOMFileController(file_path)
+        dicom_file_controller.find_all_files()
+        dicom_file_controller.find_DICOM_files()
 
         # Start searching if the directory isn't empty
         if self.file_path != "":
