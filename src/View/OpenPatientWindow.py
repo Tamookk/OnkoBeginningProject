@@ -102,13 +102,14 @@ class OpenPatientWindow(QWidget):
         # Get the currently selected directory
         file_path = self.directory_input.text()
 
-        dicom_file_controller = FindDICOMFileController.FindDICOMFileController(file_path)
-        dicom_file_controller.find_all_files()
-        dicom_file_controller.find_DICOM_files()
-
         # Start searching if the directory isn't empty
         if self.file_path != "":
             print("Searching")
+
+        dicom_file_controller = FindDICOMFileController.FindDICOMFileController(file_path)
+        dicom_file_controller.find_all_files()
+        dicom_file_controller.find_DICOM_files()
+        dicom_file_controller.check_elements()
 
     def go_display_welcome_window(self):
         """
