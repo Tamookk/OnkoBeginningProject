@@ -1,5 +1,6 @@
 from pydicom import dcmread
 from pydicom.errors import InvalidDicomError
+import numpy
 import os.path
 
 
@@ -9,6 +10,7 @@ class FindDICOMFileController:
         self.file_path = file_path
         self.files = []
         self.DICOM_files = {}
+        self.ct_image = numpy.empty([1, 1])
 
     def find_all_files(self):
         """
@@ -39,6 +41,15 @@ class FindDICOMFileController:
                     self.DICOM_files[file] = dicom_file
 
         print("Found %s DICOM files." % len(self.DICOM_files))
+
+    def get_ct_image_data(self):
+        """
+        Returns a numpy array of the pixel data of the first
+        RT Image found when checking the directory (temporary, for
+        initial sprint work).
+        :return: self.ct_image, numpy array of pixel data
+        """
+        return self.ct_image
 
     def check_elements(self):
         """
@@ -72,6 +83,9 @@ class FindDICOMFileController:
             if class_uid in elements:
                 print("File %s contains %s" % (dicom_file, elements[class_uid]))
                 if not elements_present[elements[class_uid]]:
+                    if elements[class_uid] == "CT Image":
+                        #self.ct_image = self.DICOM_files[dicom_file].pixel_array
+                        self.ct_image = self.DICOM_files[dicom_file]
                     elements_present[elements[class_uid]] = True
 
         # Print elements present in DICOM file

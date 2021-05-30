@@ -1,4 +1,4 @@
-from View import FirstTimeWindow, OpenPatientWindow, WelcomeWindow
+from View import FirstTimeWindow, ImageWindow, OpenPatientWindow, WelcomeWindow
 from PyQt5 import QtWidgets
 
 
@@ -7,6 +7,7 @@ class Controller:
         self.first_time_window = QtWidgets.QWidget()
         self.welcome_window = QtWidgets.QWidget()
         self.open_patient_window = QtWidgets.QWidget()
+        self.image_window = QtWidgets.QWidget()
 
     def show_first_time(self):
         self.first_time_window = FirstTimeWindow.FirstTimeWindow()
@@ -25,4 +26,6 @@ class Controller:
         self.open_patient_window.show()
 
     def show_display_image(self):
-        print("Next window...")
+        self.image_window = ImageWindow.ImageWindow()
+        self.image_window.go_previous_window.connect(self.show_open_patient)
+        self.image_window.show()

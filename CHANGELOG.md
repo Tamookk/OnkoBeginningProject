@@ -1,7 +1,13 @@
 # Changelog
+## 2021-05-30
+### Added
+* Ability to convert RT Image data and view this image inside the program.
+
+
 ## 2021-05-29
 ### Added
 * Program can now discover if a DICOM file set has RT Struct, CT Image, RT Dose, or RT Plan elements. The presence of each is printed to the command line. The program can also determine which of these each individual DICOM file contains.
+
 
 ## 2021-05-28
 ### Added

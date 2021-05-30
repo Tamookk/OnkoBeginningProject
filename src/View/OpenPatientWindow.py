@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import *
 from Controller import ConfigurationRecordController, FindDICOMFileController
 from os.path import expanduser
 
-import threading
 
 class OpenPatientWindow(QWidget):
     go_next_window = QtCore.pyqtSignal()
@@ -69,8 +68,8 @@ class OpenPatientWindow(QWidget):
         # Connect buttons to functions
         self.browse_button.clicked.connect(self.show_file_browser)
         self.back_button.clicked.connect(self.go_display_welcome_window)
-        #self.confirm_button.clicked.connect(self.go_display_image_window)
-        self.confirm_button.clicked.connect(self.search_for_patient)
+        self.confirm_button.clicked.connect(self.go_display_image_window)
+        #self.confirm_button.clicked.connect(self.search_for_patient)
 
     def line_edit_changed(self):
         """
@@ -122,6 +121,7 @@ class OpenPatientWindow(QWidget):
         """
         Go to the next window
         """
+        self.search_for_patient()
         self.go_next_window.emit()
         self.window.close()
 
