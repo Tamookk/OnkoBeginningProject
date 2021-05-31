@@ -14,25 +14,76 @@ class ImageWindow(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
 
-        # Create window and layout
+        # Create window and layouts
         self.window = QWidget()
-        self.window.setWindowTitle("Image Window")
+        self.window.setWindowTitle("Display Image")
+        self.window.resize(1024, 1024)
         self.layout = QVBoxLayout()
-        self.window.setLayout(self.layout)
+        self.toolbar_layout = QGridLayout()
+        self.patient_info_layout = QHBoxLayout()
+        self.outside_tab_layout = QHBoxLayout()
+        self.dicom_image_layout = QHBoxLayout()
 
-        # Widgets
+        # Toolbar widgets
+        self.placeholder_label = QLabel("Toolbar Placeholder")
+
+        self.toolbar_layout.addWidget(self.placeholder_label)
+
+        # Patient info widgets
+        self.name_label = QLabel("Name: ")
+        self.id_label = QLabel("ID: ")
+        self.gender_label = QLabel("Gender: ")
+        self.dob_label = QLabel("DoB: ")
+
+        self.patient_info_layout.addWidget(self.name_label)
+        self.patient_info_layout.addWidget(self.id_label)
+        self.patient_info_layout.addWidget(self.gender_label)
+        self.patient_info_layout.addWidget(self.dob_label)
+
+        # Structures/isodoses tab widget
+        self.struct_tabs = QTabWidget()
+        self.structures_tab = QWidget()
+        self.isodoses_tab = QWidget()
+        self.struct_tabs.resize(600, 200)
+        self.struct_tabs.addTab(self.structures_tab, "Structures")
+        self.struct_tabs.addTab(self.isodoses_tab, "Isodoses")
+
+        # DICOM view widgets
+        self.dicom_tabs = QTabWidget()
+        self.dicom_view_tab = QWidget()
+        self.dvh_tab = QWidget()
+        self.dicom_tree_tab = QWidget()
+        self.clinical_data_tab = QWidget()
+        self.dicom_tabs.addTab(self.dicom_view_tab, "DICOM View")
+        self.dicom_tabs.addTab(self.dvh_tab, "DVH")
+        self.dicom_tabs.addTab(self.dicom_tree_tab, "DICOM Tree")
+        self.dicom_tabs.addTab(self.clinical_data_tab, "Clinical Data")
+
+        # Image display widgets
         self.image_label = QLabel()
-        self.back_button = QPushButton("Back")
-        self.image_button = QPushButton("Show Image")
+        self.slider = QSlider(QtCore.Qt.Vertical)
 
-        # Add widgets to layout
-        self.layout.addWidget(self.image_label)
-        self.layout.addWidget(self.back_button)
-        self.layout.addWidget(self.image_button)
+        # Load image for image label
+        self.show_image()
 
-        # Connect buttons to functions
-        self.back_button.clicked.connect(self.go_display_open_patient_window)
-        self.image_button.clicked.connect(self.show_image)
+        # DICOM View Layout
+        temp_layout = QVBoxLayout()
+        temp_layout.addWidget(self.image_label)
+        self.dicom_image_layout.addLayout(temp_layout)
+        self.dicom_image_layout.addWidget(self.slider)
+
+        self.dicom_image_layout.addWidget(self.slider)
+
+        self.dicom_view_tab.setLayout(self.dicom_image_layout)
+
+        self.outside_tab_layout.addWidget(self.struct_tabs)
+        self.outside_tab_layout.addWidget(self.dicom_tabs)
+
+        # Add layouts to window
+        self.layout.addLayout(self.toolbar_layout)
+        self.layout.addLayout(self.patient_info_layout)
+        self.layout.addLayout(self.outside_tab_layout)
+        self.window.setLayout(self.layout)
 
     def get_image_data(self):
         """
@@ -56,6 +107,13 @@ class ImageWindow(QWidget):
         """
         # Get DICOM file data
         self.get_image_data()
+
+        # Update patient fields
+        print(str(self.pixel_data['PatientName'].value))
+        self.name_label.setText("Name: " + str(self.pixel_data['PatientName'].value))
+        self.id_label.setText("ID: " + self.pixel_data['PatientID'].value)
+        self.gender_label.setText("Gender: " + self.pixel_data['PatientSex'].value)
+        self.dob_label.setText("DoB: " + self.pixel_data['PatientBirthDate'].value)
 
         # Try turn pixel data into image
         # from https://github.com/pydicom/contrib-pydicom/blob/master/viewers/pydicom_PIL.py

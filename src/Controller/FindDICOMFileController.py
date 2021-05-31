@@ -84,7 +84,6 @@ class FindDICOMFileController:
                 print("File %s contains %s" % (dicom_file, elements[class_uid]))
                 if not elements_present[elements[class_uid]]:
                     if elements[class_uid] == "CT Image":
-                        #self.ct_image = self.DICOM_files[dicom_file].pixel_array
                         self.ct_image = self.DICOM_files[dicom_file]
                     elements_present[elements[class_uid]] = True
 
