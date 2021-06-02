@@ -40,7 +40,7 @@ class FindDICOMFileController:
                     count += 1
                     self.DICOM_files[file] = dicom_file
 
-        print("Found %s DICOM files." % len(self.DICOM_files))
+        print("\nFound %s DICOM files." % len(self.DICOM_files))
 
     def get_ct_image_data(self):
         """
@@ -90,3 +90,7 @@ class FindDICOMFileController:
         # Print elements present in DICOM file
         print("DICOM Dataset contains:")
         print(elements_present)
+
+        # Return true if DICOM Dataset contains > 0 elements
+        return True in elements_present.values()
+
