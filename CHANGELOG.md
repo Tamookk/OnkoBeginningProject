@@ -1,5 +1,8 @@
 # Changelog
 ## 2021-06-09
+### Added
+* Program now displays DICOM files and what they contain when the user selects a patient directory/when the patient select window opens.
+
 ### Changed
 * Appearance of program.
 

@@ -5,6 +5,8 @@ from PyQt5.QtWidgets import *
 from Controller import ConfigurationRecordController, FindDICOMFileController
 from os.path import expanduser
 
+import platform
+
 
 class OpenPatientWindow(QWidget):
     go_next_window = QtCore.pyqtSignal()
@@ -17,6 +19,12 @@ class OpenPatientWindow(QWidget):
         self.database = ConfigurationRecordController.ConfigurationRecordController()
         self.database.connect_to_database()
         self.file_path = self.database.get_default_directory()
+
+        # DICOM file controller
+        self.dicom_file_controller = FindDICOMFileController.FindDICOMFileController(self.file_path)
+
+        # Dictionary of DICOM files
+        self.DICOM_files = {}
 
         # Create window and layouts
         self.window = QWidget()
@@ -140,15 +148,8 @@ class OpenPatientWindow(QWidget):
         # Tree widgets
         self.patient_tree = QTreeWidget()
         self.patient_tree.setHeaderLabels(["File Name", "File Type"])
+        self.patient_tree.header().setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
         self.patient_tree.setStyleSheet(self.stylesheet)
-
-        self.item = QTreeWidgetItem()
-        self.item.setText(0, "dicom 1")
-        self.item.setText(1, "RT Struct")
-        self.itemchild = QTreeWidgetItem()
-        self.itemchild.setText(0, "no>")
-        self.item.addChild(self.itemchild)
-        self.patient_tree.addTopLevelItem(self.item)
 
         # Bottom widgets
         self.bottom_text = "The selected directories above will be opened in the OnkoDICOM program. "
@@ -182,6 +183,9 @@ class OpenPatientWindow(QWidget):
         self.back_button.clicked.connect(self.go_display_welcome_window)
         self.confirm_button.clicked.connect(self.go_display_image_window)
         #self.confirm_button.clicked.connect(self.search_for_patient)
+
+        # Populate tree view
+        self.search_for_patient()
 
     def line_edit_changed(self):
         """
@@ -217,10 +221,26 @@ class OpenPatientWindow(QWidget):
         if self.file_path != "":
             print("Searching")
 
-        dicom_file_controller = FindDICOMFileController.FindDICOMFileController(file_path)
-        dicom_file_controller.find_all_files()
-        dicom_file_controller.find_DICOM_files()
-        dicom_file_controller.check_elements()
+        self.dicom_file_controller.find_all_files()
+        self.dicom_file_controller.find_DICOM_files()
+        self.DICOM_files = self.dicom_file_controller.get_DICOM_files()
+        self.display_files()
+
+    def display_files(self):
+        """
+        Loop through dictionary of DICOM files and append these to the tree view.
+        """
+        for file in self.DICOM_files:
+            temp_item = QTreeWidgetItem()
+            name = ""
+            if platform.system() == "Windows":
+                name = file.split("\\")[-1]
+            else:
+                name = file.split("/")[-1]
+            type = self.dicom_file_controller.get_type(self.DICOM_files[file])
+            temp_item.setText(0, name)
+            temp_item.setText(1, type)
+            self.patient_tree.addTopLevelItem(temp_item)
 
     def go_display_welcome_window(self):
         """
@@ -233,7 +253,6 @@ class OpenPatientWindow(QWidget):
         """
         Go to the next window
         """
-        self.search_for_patient()
         self.go_next_window.emit()
         self.window.close()
 

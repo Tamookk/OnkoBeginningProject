@@ -42,6 +42,13 @@ class FindDICOMFileController:
 
         print("\nFound %s DICOM files." % len(self.DICOM_files))
 
+    def get_DICOM_files(self):
+        """
+        Returns the list of DICOM files.
+        :return: Dictionary of DICOM files found in self.file_path
+        """
+        return self.DICOM_files
+
     def get_ct_image_data(self):
         """
         Returns a numpy array of the pixel data of the first
@@ -50,6 +57,25 @@ class FindDICOMFileController:
         :return: self.ct_image, numpy array of pixel data
         """
         return self.ct_image
+
+    def get_type(self, DICOM_file):
+        """
+        Returns the type of data contained within a DICOM file
+        :return: type, string type of data in DICOM file
+        """
+        elements = {
+            '1.2.840.10008.5.1.4.1.1.481.3': "RT Struct",
+            '1.2.840.10008.5.1.4.1.1.2': "CT Image",
+            '1.2.840.10008.5.1.4.1.1.481.2': "RT Dose",
+            '1.2.840.10008.5.1.4.1.1.481.5': "RT Plan"
+        }
+
+        class_uid = DICOM_file["SOPClassUID"].value
+        # Check to see what type of data the given DICOM file holds
+        if class_uid in elements:
+            return elements[class_uid]
+        else:
+            return "---"
 
     def check_elements(self):
         """
