@@ -1,7 +1,4 @@
-from os.path import expanduser
-from PyQt5.QtCore import *
-from PyQt5.QtGui import QFont, QPixmap
-from PyQt5.QtWidgets import *
+from PySide6.QtWidgets import *
 
 from Controller import ConfigurationRecordController, TopLevelController
 from Controller.ConfigurationRecordController import ConfigurationRecordController

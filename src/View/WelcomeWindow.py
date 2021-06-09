@@ -1,10 +1,10 @@
-from PyQt5 import QtCore
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PySide6 import QtCore
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 
 
 class WelcomeWindow(QWidget):
-    go_next_window = QtCore.pyqtSignal()
+    go_next_window = QtCore.Signal()
 
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)

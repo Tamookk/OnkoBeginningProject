@@ -1,5 +1,5 @@
 from View import FirstTimeWindow, ImageWindow, OpenPatientWindow, WelcomeWindow
-from PyQt5 import QtWidgets
+from PySide6 import QtWidgets
 
 
 class Controller:

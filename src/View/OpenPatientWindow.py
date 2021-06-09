@@ -1,13 +1,13 @@
-from PyQt5 import QtCore
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PySide6 import QtCore
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 from Controller import ConfigurationRecordController, FindDICOMFileController
 from os.path import expanduser
 
 
 class OpenPatientWindow(QWidget):
-    go_next_window = QtCore.pyqtSignal()
-    go_previous_window = QtCore.pyqtSignal()
+    go_next_window = QtCore.Signal()
+    go_previous_window = QtCore.Signal()
 
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
