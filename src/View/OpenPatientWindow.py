@@ -1,3 +1,4 @@
+from PyQt5 import Qt
 from PyQt5 import QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -19,7 +20,8 @@ class OpenPatientWindow(QWidget):
 
         # Create window and layouts
         self.window = QWidget()
-        self.window.setWindowTitle("Select Patient Window")
+        self.window.setWindowTitle("Onko Beginning Project")
+        self.window.resize(840, 530)
 
         self.layout = QVBoxLayout()
         self.directory_layout = QGridLayout()
@@ -30,28 +32,138 @@ class OpenPatientWindow(QWidget):
         self.layout.addLayout(self.tree_layout)
         self.layout.addLayout(self.bottom_layout)
         self.window.setLayout(self.layout)
+        self.layout.setAlignment(Qt.Qt.AlignCenter)
+
+        # Window stylesheet
+        self.stylesheet = """
+            QLineEdit
+            {
+                padding: 0 16px;
+                min-height: 36px;
+            }
+            
+            QPushButton
+            {
+                margin: 4px;
+                padding: 0 16px;
+                min-height: 36px;
+                border-radius: 2px;
+                color: #f5f5f5;
+                font-family: "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+                font-size: 14px;
+                text-align: center;
+                qproperty-iconSize: 18px;
+            }
+            QPushButton#NormalButton
+            {
+                background-color: #9370db;
+            }
+            QPushButton#NormalButton:hover
+            {   
+                /* +10% saturation */
+                background-color: #b299e6;
+            }
+            QPushButton#NormalButton:pressed
+            {
+                /* -20% saturation */
+                background-color: #5c2eb8;
+            }
+            QPushButton#ConfirmButton
+            {
+                background-color: #388e3c;
+            }
+            QPushButton#ConfirmButton:hover
+            {
+                background-color: #49b64e;
+            }
+            QPushButton#ConfirmButton:pressed
+            {
+                background-color: #1d491f;
+            }
+            QPushButton#SkipButton
+            {
+                background-color: #f44336;
+            }
+            QPushButton#SkipButton:hover
+            {
+                background-color: #f7776e;
+            }
+            QPushButton#SkipButton:pressed
+            {
+                background-color: #c2160a;
+            }
+            
+            QTreeView::item
+            {
+                color: #000000;
+                min-height: 36px;
+                font-size: 16px;
+            }
+            QTreeView::item:hover:!focus
+            {
+                background-color: #b299e6;
+            }
+            QTreeView::item:focus:!hover
+            {
+                border: 2px solid #9370DB;
+            }
+            QTreeView::item:selected:hover:!focus, QTreeView::item:selected:hover
+            {
+                background-color: #5c2eb8;
+                color: white;
+                border: 2px solid rgb(200, 200, 200);
+            }
+            QTreeView::item:selected:!hover:focus
+            {
+                background-color: #5c2eb8;
+                color: white;
+                border: 2px solid #9370DB;
+            }
+            """
 
         # Directory widgets
-        label_text = "Choose the path of the folder containing DICOM files to load Patient's details:"
+        label_text = "Change the directory to another folder containing DICOM files to load patient's details:"
+        self.label_font = QFont()
+        self.label_font.setPixelSize(14)
         self.info_label = QLabel(label_text)
+        self.info_label.setFont(self.label_font)
         self.directory_input = QLineEdit()
         self.directory_input.setText(self.file_path)
         self.directory_input.textChanged.connect(self.line_edit_changed)
         self.directory_input.returnPressed.connect(self.search_for_patient)
-        self.browse_button = QPushButton("Browse")
+
+        self.browse_button = QPushButton("Change")
+        self.browse_button.setObjectName("NormalButton")
+        self.browse_button.setStyleSheet(self.stylesheet)
+        self.directory_input.setStyleSheet(self.stylesheet)
 
         # Tree widgets
         self.patient_tree = QTreeWidget()
-        self.patient_tree.setHeaderHidden(True)
-        self.patient_tree.setHeaderLabels([""])
+        self.patient_tree.setHeaderLabels(["File Name", "File Type"])
+        self.patient_tree.setStyleSheet(self.stylesheet)
+
+        self.item = QTreeWidgetItem()
+        self.item.setText(0, "dicom 1")
+        self.item.setText(1, "RT Struct")
+        self.itemchild = QTreeWidgetItem()
+        self.itemchild.setText(0, "no>")
+        self.item.addChild(self.itemchild)
+        self.patient_tree.addTopLevelItem(self.item)
 
         # Bottom widgets
-        self.bottom_text = "The selected directories above will be opened in the OnkoDICOM\nprogram. "
+        self.bottom_text = "The selected directories above will be opened in the OnkoDICOM program. "
         self.bottom_text += "Click 'Refresh' to reload the files from the directory."
         self.bottom_label = QLabel(self.bottom_text)
+        self.bottom_label.setFont(self.label_font)
         self.refresh_button = QPushButton("Refresh")
+        self.refresh_button.setObjectName("NormalButton")
+        self.refresh_button.setStyleSheet(self.stylesheet)
         self.back_button = QPushButton("Back")
+        self.back_button.setObjectName("SkipButton")
+        self.back_button.setStyleSheet(self.stylesheet)
         self.confirm_button = QPushButton("Confirm")
+        self.confirm_button.setObjectName("ConfirmButton")
+        self.confirm_button.setStyleSheet(self.stylesheet)
 
         # Add widgets to layout
         self.directory_layout.addWidget(self.info_label, 0, 0, 1, 4)

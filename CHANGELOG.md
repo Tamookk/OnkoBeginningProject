@@ -1,4 +1,8 @@
 # Changelog
+## 2021-06-09
+### Changed
+* Appearance of program.
+
 ## 2021-05-31
 ### Added
 * Image window UI.

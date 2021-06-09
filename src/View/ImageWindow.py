@@ -17,12 +17,56 @@ class ImageWindow(QWidget):
         # Create window and layouts
         self.window = QWidget()
         self.window.setWindowTitle("Display Image")
-        self.window.resize(1024, 1024)
+        self.window.setMinimumSize(1080, 700)
         self.layout = QVBoxLayout()
         self.toolbar_layout = QGridLayout()
         self.patient_info_layout = QHBoxLayout()
         self.outside_tab_layout = QHBoxLayout()
         self.dicom_image_layout = QHBoxLayout()
+
+        self.stylesheet = """
+        QTabWidget::tab-bar
+        {
+            alignment: left;
+        }
+        QTabWidget::pane
+        {
+            border: 0;
+            padding-top: 2px;
+            background-color: white;
+        }
+        QTabBar
+        {
+            background-color: rgb(244, 245, 245);
+        }
+        QTabBar::tab
+        {
+            border-top: 0;
+            border-right: 0;
+            border-bottom: 3px solid #b3b3b3;
+            border-left: 0;
+            margin: 0;
+            padding: 0 12px;
+            background-color: rgb(244, 245, 245);
+            text-align: center;
+            height: 36px;
+            width: 100%;
+        }
+        QTabBar::tab:hover
+        {
+            background-color: #b299e6;
+            border-bottom: 3px solid #9370DB;
+        }
+        QTabBar::tab:pressed
+        {
+            background-color: #5c2eb8;
+        }
+        QTabBar::tab:selected
+        {
+            background-color: white;
+            border-bottom: 3px solid #5c2eb8;
+        }
+        """
 
         # Toolbar widgets
         self.placeholder_label = QLabel("Toolbar Placeholder")
@@ -40,24 +84,29 @@ class ImageWindow(QWidget):
         self.patient_info_layout.addWidget(self.gender_label)
         self.patient_info_layout.addWidget(self.dob_label)
 
+        splitter = QSplitter(QtCore.Qt.Horizontal)
+
         # Structures/isodoses tab widget
-        self.struct_tabs = QTabWidget()
+        self.left_panel = QTabWidget()
+        self.left_panel.setMinimumWidth(300)
+        self.left_panel.setMaximumWidth(500)
+        self.left_panel.setStyleSheet(self.stylesheet)
         self.structures_tab = QWidget()
         self.isodoses_tab = QWidget()
-        self.struct_tabs.resize(600, 200)
-        self.struct_tabs.addTab(self.structures_tab, "Structures")
-        self.struct_tabs.addTab(self.isodoses_tab, "Isodoses")
+        self.left_panel.addTab(self.structures_tab, "Structures")
+        self.left_panel.addTab(self.isodoses_tab, "Isodoses")
 
         # DICOM view widgets
-        self.dicom_tabs = QTabWidget()
+        self.right_panel = QTabWidget()
+        self.right_panel.setStyleSheet(self.stylesheet)
         self.dicom_view_tab = QWidget()
         self.dvh_tab = QWidget()
         self.dicom_tree_tab = QWidget()
         self.clinical_data_tab = QWidget()
-        self.dicom_tabs.addTab(self.dicom_view_tab, "DICOM View")
-        self.dicom_tabs.addTab(self.dvh_tab, "DVH")
-        self.dicom_tabs.addTab(self.dicom_tree_tab, "DICOM Tree")
-        self.dicom_tabs.addTab(self.clinical_data_tab, "Clinical Data")
+        self.right_panel.addTab(self.dicom_view_tab, "DICOM View")
+        self.right_panel.addTab(self.dvh_tab, "DVH")
+        self.right_panel.addTab(self.dicom_tree_tab, "DICOM Tree")
+        self.right_panel.addTab(self.clinical_data_tab, "Clinical Data")
 
         # Image display widgets
         self.image_label = QLabel()
@@ -76,13 +125,13 @@ class ImageWindow(QWidget):
 
         self.dicom_view_tab.setLayout(self.dicom_image_layout)
 
-        self.outside_tab_layout.addWidget(self.struct_tabs)
-        self.outside_tab_layout.addWidget(self.dicom_tabs)
+        splitter.addWidget(self.left_panel)
+        splitter.addWidget(self.right_panel)
 
         # Add layouts to window
         self.layout.addLayout(self.toolbar_layout)
         self.layout.addLayout(self.patient_info_layout)
-        self.layout.addLayout(self.outside_tab_layout)
+        self.layout.addWidget(splitter)
         self.window.setLayout(self.layout)
 
     def get_image_data(self):

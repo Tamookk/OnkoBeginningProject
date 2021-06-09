@@ -1,5 +1,6 @@
 from Controller.ConfigurationRecordController import ConfigurationRecordController
 from DirectoryManager import DirectoryManager
+from PyQt5 import Qt
 from PyQt5 import QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -24,19 +25,23 @@ class FirstTimeWindow(QWidget):
         self.directory_layout = QGridLayout()
         self.folder_tree_layout = QGridLayout()
         self.window.setLayout(self.outer_layout)
+        self.window.resize(840, 530)
+        self.outer_layout.setAlignment(Qt.Qt.AlignCenter)
 
-        # Welcome widgets
-        self.logo = QPixmap("../assets/images/logo.png")
+        # Widgets
         self.logo_label = QLabel()
-        self.logo_label.setPixmap(self.logo)
-        self.welcome_text = """
-                Welcome to OnkoDICOM.\t\t\t\t\t\n
-                Config file not found.\n
-                Welcome message.\n
-                Onko introduction.\n
-                Onko missions.
-                """
+        self.logo_label.setPixmap(QPixmap("../assets/images/logo.png"))
+        self.logo_label.setScaledContents(True)
+        self.logo_label.setFixedSize(240, 130)
+
+        self.welcome_text = "Welcome to OnkoDICOM - the solution for producing data for\n"
+        self.welcome_text += "analysis from your oncology plans and scans.\n\n"
+        self.welcome_text += "A configuration file was not found. Please choose a directory where\n"
+        self.welcome_text += "DICOM files can be found."
+        self.welcome_font = QFont()
+        self.welcome_font.setPixelSize(14)
         self.welcome_text_label = QLabel(self.welcome_text)
+        self.welcome_text_label.setFont(self.welcome_font)
 
         # Directory widgets
         self.directory_label = QLabel("Add a directory as your default directory")
@@ -44,6 +49,37 @@ class FirstTimeWindow(QWidget):
         self.directory_input.setText(self.user_home)
         self.directory_input.textChanged.connect(lambda: self.line_edit_changed())
         self.browse_button = QPushButton("Browse")
+        self.directory_stylesheet = """
+                QLineEdit
+                {
+                    padding: 0 16px;
+                    min-height: 36px;
+                }
+                QPushButton
+                {
+                    margin: 4px;
+                    padding: 0 16px;
+                    min-height: 36px;
+                    border-radius: 2px;
+                    color: #f5f5f5;
+                    background-color: #9370DB;
+                    font-family: "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+                    font-size: 14px;
+                    text-align: center;
+                    qproperty-iconSize: 18px;
+                }
+                QPushButton:hover
+                {   
+                    /* +10% saturation */
+                    background-color: #b299e6;
+                }
+                QPushButton:pressed
+                {
+                    /* -20% saturation */
+                    background-color: #5c2eb8;
+                }"""
+        self.directory_input.setStyleSheet(self.directory_stylesheet)
+        self.browse_button.setStyleSheet(self.directory_stylesheet)
 
         # Folder tree widgets
         self.folder_model = QFileSystemModel()
@@ -56,7 +92,49 @@ class FirstTimeWindow(QWidget):
         self.folder_tree.setSortingEnabled(True)
         self.folder_tree.setColumnWidth(0, self.folder_tree.width() * 0.3)
         self.skip_button = QPushButton("Skip")
+        self.skip_button.setObjectName("SkipButton")
         self.confirm_button = QPushButton("Confirm")
+        self.confirm_button.setObjectName("ConfirmButton")
+        self.button_stylesheet = """
+                        QPushButton
+                        {
+                            margin: 4px;
+                            padding: 0 16px;
+                            min-height: 36px;
+                            border-radius: 2px;
+                            color: #f5f5f5;
+                            font-family: "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+                            font-size: 14px;
+                            text-align: center;
+                            qproperty-iconSize: 18px;
+                        }
+                        QPushButton#ConfirmButton
+                        {
+                            background-color: #388e3c;
+                        }
+                        QPushButton#ConfirmButton:hover
+                        {
+                            background-color: #49b64e;
+                        }
+                        QPushButton#ConfirmButton:pressed
+                        {
+                            background-color: #1d491f;
+                        }
+                        
+                        QPushButton#SkipButton
+                        {
+                            background-color: #f44336;
+                        }
+                        QPushButton#SkipButton:hover
+                        {
+                            background-color: #f7776e;
+                        }
+                        QPushButton#SkipButton:pressed
+                        {
+                            background-color: #c2160a;
+                        }"""
+        self.skip_button.setStyleSheet(self.button_stylesheet)
+        self.confirm_button.setStyleSheet(self.button_stylesheet)
 
         # Message box for creating directory
         self.msgbox_create_dir = QMessageBox()
@@ -81,6 +159,7 @@ class FirstTimeWindow(QWidget):
 
         # Add widgets to the layout
         self.outer_layout.addLayout(self.welcome_layout)
+        self.outer_layout.addSpacing(30)
         self.outer_layout.addLayout(self.directory_layout)
         self.outer_layout.addLayout(self.folder_tree_layout)
 
